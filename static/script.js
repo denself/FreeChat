@@ -34,7 +34,7 @@ var ws;
      }
 
     function openWS(messageContainer) {
-        ws = new WebSocket("ws://"+document.domain+"/chat");
+        ws = new WebSocket("ws://"+document.domain+":8001/chat");
         ws.onopen = function(){
             messageContainer.appendChild(createChatMsg(getCurrentDateTime(), "[SYSTEM]", "Connection open"));
         }
