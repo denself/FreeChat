@@ -1,25 +1,12 @@
 var ws;
-    function getCurrentDateTime(){
-        d = new Date();
-        strd = ""
-        if (d.getMonth()<10) strd+="0"
-        strd+=(d.getMonth()+1)+"/";
-        if (d.getDate()<10) strd+="0"
-        strd += d.getDate()+"/"+(d.getYear()%100)+" "
-        if (d.getHours()<10) strd+="0"
-        strd+=d.getHours()+":"
-        if (d.getMinutes()<10) strd+="0"
-        strd+=d.getMinutes()+":";
-        if (d.getSeconds()<10) strd+="0"
-        strd+=d.getSeconds();
-        return strd;
-    }
+var message_container
+var input_message;
 
     function createChatMsg(date, username, message) {
         var msg = document.createElement("div");
 
         var lidate = document.createElement("i");
-        lidate.innerHTML = date+"  ";
+        lidate.innerHTML = (new Date(date)).toLocaleString()+"  ";
         msg.appendChild(lidate);
 
         var liusername = document.createElement("b");
@@ -30,21 +17,21 @@ var ws;
         dom_msg.innerHTML = message;
         msg.appendChild(dom_msg);
 
-        return msg;
+        message_container.appendChild(msg);
      }
 
-    function openWS(messageContainer) {
-        ws = new WebSocket("ws://"+document.domain+":8001/chat");
+    function openWS() {
+        ws = new WebSocket("ws://"+document.domain+":"+_port+"/chat");
         ws.onopen = function(){
-            messageContainer.appendChild(createChatMsg(getCurrentDateTime(), "[SYSTEM]", "Connection open"));
+            createChatMsg(Date(), "[SYSTEM]", "Connection open");
         }
         ws.onmessage = function(e) {
           var data = JSON.parse(e.data);
-          messageContainer.appendChild(createChatMsg(data.date, data.username, data.message));
-          messageContainer.scrollTop = messageContainer.scrollHeight;
+          createChatMsg(data.date, data.username, data.message);
+          message_container.scrollTop = message_container.scrollHeight;
         };
         ws.onclose = function(e) {
-          openWS(messageContainer);
+          openWS();
         };
         ws.onerror = function(error){
             console.log('Error detected: ' + error);
@@ -52,24 +39,31 @@ var ws;
     }
 
       function sendMessage() {
-        var data = { username: document.getElementById("username").value,
-                     message: document.getElementById("message").value,
-                     date: getCurrentDateTime()};
+        var data = { username: _username,
+                     message: input_message.value};
 
         if(data.username && data.message) {
           ws.send(JSON.stringify(data));
-          document.getElementById("message").value;
+          input_message.value="";
         }
       }
 
       window.onload = function() {
-        var messageContainer = document.getElementById("chat");
+        message_container = document.getElementById("chat");
+        input_message  = document.getElementById("message");
+        input_message.addEventListener('keypress', function(e) {
+          if (e.keyCode == 13) {
+            sendMessage()
+          }
+        });
+        var date = new Date()
+        console.log(date);
         if("WebSocket" in window) {
-          messageContainer.appendChild(createChatMsg(getCurrentDateTime(), "[SYSTEM]", "WebSocket is supported by your browser!"));
-          messageContainer.appendChild(createChatMsg(getCurrentDateTime(), "[SYSTEM]", "Pick a username and start sending out messages."));
-          openWS(messageContainer);
+
+          createChatMsg(date, "[SYSTEM]", "WebSocket is supported by your browser!");
+          openWS();
         }
         else {
-          messageContainer.appendChild(createChatMsg(getCurrentDateTime(), "[SYSTEM]", "WebSocket is NOT supported by your browser!"));
+          createChatMsg(date, "[SYSTEM]", "WebSocket is NOT supported by your browser!");
         }
       }

@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
+    ​<meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="/static/style.css"/>
+    <script type="text/javascript">var _username = "{{user.username}}";var _port="{{port}}"</script>
     <script type="text/javascript" src="/static/script.js"></script>
   </head>
   <body>
+  <span>{{user.username}}, <a href="/signout/">Sign Out</a></span>
     <div id="chat" style="width: 100%; height: 400px; overflow: auto; font-family: Arial"></div>
-    <div id="input_area">
-      <input id="username" type="text" placeholder="Your username" style=" width: 100px">
-      <input id="message"  type="text" placeholder="Your message"  onkeydown="if (event.keyCode == 13) sendMessage()"style="width: 390px">
-      <input id="sendbtn"  type="button" value="Send" onclick="sendMessage()">
-    </div>
+    <input id="message"  type="text" placeholder="Your message" style="width: 390px">
   </body>
 </html>

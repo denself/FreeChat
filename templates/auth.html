@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>'Sign In to booklib'</title>
+</head>
+<body>
+  <div class="auth">
+      <span>Sign In or Sign Up</span>
+      <form method="post">
+          {%csrf_token%}
+          <input name="username" placeholder="username" type="text"><br>
+          <input name="password" placeholder="password" type="password"><br>
+          <p style="color: red;">{{error}}</p>
+          <input name="submitbt" type="submit"><br>
+      </form>
+  </div>
+</body>
+</html>
