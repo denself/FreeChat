@@ -17,12 +17,12 @@ class WebSocketChatHandler(WebSocketHandler):
 
     def on_message(self, message):
         """Handle incoming messages on the WebSocket"""
-        d = datetime.datetime.now()  #Time, when message was handled
+        d = datetime.datetime.utcnow()  #Time, when message was handled
         m = json.loads(message)  #Parsing of JSON mesage
         logging.info(u'User [%s] sent a message "%s"' % (m["username"], m["message"]))
         m["date"] = d.isoformat()  #Adding current time
         for client in clients:  #resending message to all connected clients
-            client.write_message(message)
+            client.write_message(json.dumps(m))
 
     def on_close(self):
         """Invoked when the WebSocket is closed."""

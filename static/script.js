@@ -65,7 +65,7 @@ var input_message;
         });
         var date = new Date()
         console.log(date);
-        //Checking if webbrowser allowing WebSockets
+        //Checking if webbrowser supports WebSockets
         if("WebSocket" in window) {
 
           createChatMsg(date, "[SYSTEM]", "WebSocket is supported by your browser!");
